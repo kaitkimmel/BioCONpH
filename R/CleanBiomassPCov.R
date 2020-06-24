@@ -1,5 +1,5 @@
 ### Cleaning percent cover and biomass for final analyses
-library(tidyr)
+library(tidyr) 
 library(here)
 percov <- read.delim(here("data", "txt files", "PerCov_Dwnld2020.txt")) 
 # dataset online at https://www.cedarcreek.umn.edu/research/data/dataset?pce141
