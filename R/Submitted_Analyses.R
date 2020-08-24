@@ -52,8 +52,12 @@ bioavg <- dat[,c(5,6,10,13)]%>% group_by(ExpYear, N,SR) %>%
   summarise_all(funs(mean(., na.rm = TRUE)))
 bioavg$eBio <- exp(bioavg$l.biomass)
 grdat <- merge(bioavg, df, by = c("ExpYear", "SR", "N"))
+<<<<<<< HEAD
 
 png(here("Figures", "Fig2.png"), height = 1250, width = 1750, res = 300)
+=======
+png(here("Figures", "BiomassThruTime.png"), height = 1250, width = 1750, res = 300)
+>>>>>>> 4f9a534cbb2e8458e3fa90fdbec292f1b8e26f48
 ggplot(aes(x = ExpYear, y = efit), data = grdat) +
   geom_point(aes(x = ExpYear, y = eBio, color = N), data = grdat) +
   geom_ribbon(aes(ymin = lwr, ymax = upr, fill = N), alpha = 0.5) +
@@ -156,7 +160,11 @@ gr3 <- ggplot(aes(x = pH, y = efit), data = df3[df3$N == "Nenrich",]) +
 pdf(here("Figures", "Prod.pdf"), width = 10, height = 5.5, onefile = FALSE)
 ggarrange(plotlist = list(gr1, gr3), ncol = 2, nrow = 1, common.legend = FALSE, labels = c("(a)", "(b)"))
 dev.off()
+<<<<<<< HEAD
 png(here("Figures", "Fig4.png"), width = 2500, height = 1250, res = 300)
+=======
+png(here("Figures", "Prod.png"), width = 2500, height = 1250, res = 300)
+>>>>>>> 4f9a534cbb2e8458e3fa90fdbec292f1b8e26f48
 ggarrange(plotlist = list(gr1, gr3), ncol = 2, nrow = 1, common.legend = FALSE, labels = c("(a)", "(b)"))
 dev.off()
 
@@ -233,7 +241,11 @@ g2 <- ggplot(aes(x = ExpYear, y = fit), data = p5) +
 ggarrange(plotlist = list(g1,g2), common.legend = TRUE, nrow = 2, ncol = 1, labels = c("A", "B"))
 dev.off()
 
+<<<<<<< HEAD
 png(here("Figures", "Fig3.png"), height = 1750, width = 2500, res = 300)
+=======
+png(here("Figures", "FactorResponse.png"), height = 1750, width = 2500, res = 300)
+>>>>>>> 4f9a534cbb2e8458e3fa90fdbec292f1b8e26f48
 ggarrange(plotlist = list(g1,g2), common.legend = TRUE, nrow = 2, ncol = 1, labels = c("(a)", "(b)"))
 dev.off()
 
