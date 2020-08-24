@@ -52,7 +52,8 @@ bioavg <- dat[,c(5,6,10,13)]%>% group_by(ExpYear, N,SR) %>%
   summarise_all(funs(mean(., na.rm = TRUE)))
 bioavg$eBio <- exp(bioavg$l.biomass)
 grdat <- merge(bioavg, df, by = c("ExpYear", "SR", "N"))
-pdf(here("Figures", "BiomassThruTime.pdf"), height = 4, width = 6)
+
+png(here("Figures", "Fig2.png"), height = 1250, width = 1750, res = 300)
 ggplot(aes(x = ExpYear, y = efit), data = grdat) +
   geom_point(aes(x = ExpYear, y = eBio, color = N), data = grdat) +
   geom_ribbon(aes(ymin = lwr, ymax = upr, fill = N), alpha = 0.5) +
@@ -63,9 +64,10 @@ ggplot(aes(x = ExpYear, y = efit), data = grdat) +
   facet_grid(~SR) + 
   theme_classic() +
   guides(fill = FALSE) + 
-  labs(x = "Experiment Year", y = "Aboveground Biomass (g/m2)") +
+  labs(x = "Experiment Year", y = bquote("Aboveground Biomass" ~(g/m^2))) +
   theme(text = element_text(size = 14))
 dev.off()
+
 
 #########################################################
 #### comparison of 1st three years and last 3 years ####
@@ -110,7 +112,7 @@ mod3 <- lme(l.biomass ~ N + l.SR + pH + l.year + N:l.year + N:l.SR + N:pH + l.SR
 anova(mod2, mod3, BEFmod1) #mod3 best fitting model
 
 ###################
-#### Figure 3 ####
+#### Figure 4 ####
 #################
 df1 <- expand.grid(l.SR = log(seq(1,16, by = 0.1)), l.year = log(seq(2,20, by = 1)), N = c("Namb","Nenrich"), pH = seq(4,8, by = .5))
 p1 <- predictSE.lme(mod3, df1)
@@ -129,7 +131,7 @@ gr1 <- ggplot(aes(x = SR, y = efit), data = df1sum[df1sum$N == "Namb",]) +
   ylim(0,1800) + 
   theme_classic() + 
   scale_x_continuous(breaks = c(1,4,9,16)) + 
-  labs(x = "Species Richness", y = "Aboveground Biomass (g/m2)") +
+  labs(x = "Planted Species Richness", y = bquote("Aboveground Biomass" ~(g/m^2))) +
   theme(axis.text = element_text(size = 14), axis.title = element_text(size = 16))
 
 
@@ -149,10 +151,13 @@ gr3 <- ggplot(aes(x = pH, y = efit), data = df3[df3$N == "Nenrich",]) +
   geom_line(color = "red", lwd = 1) +
   ylim(0,1800) +
   theme_classic() + 
-  labs(x = "pH", y = "Aboveground Biomass (g/m2)", color = "Planted Richness") +
+  labs(x = "pH", y = bquote("Aboveground Biomass" ~(g/m^2)), color = "Planted Richness") +
   theme(axis.text = element_text(size = 14), axis.title = element_text(size = 16))
 pdf(here("Figures", "Prod.pdf"), width = 10, height = 5.5, onefile = FALSE)
-ggarrange(plotlist = list(gr1, gr3), ncol = 2, nrow = 1, common.legend = FALSE, labels = c("A", "B"))
+ggarrange(plotlist = list(gr1, gr3), ncol = 2, nrow = 1, common.legend = FALSE, labels = c("(a)", "(b)"))
+dev.off()
+png(here("Figures", "Fig4.png"), width = 2500, height = 1250, res = 300)
+ggarrange(plotlist = list(gr1, gr3), ncol = 2, nrow = 1, common.legend = FALSE, labels = c("(a)", "(b)"))
 dev.off()
 
 #########################################
@@ -191,7 +196,7 @@ md2.n <- lme(pH~ N*l.SR*l.year, random = ~1|Ring/Plot,
 anova(md2, md2.l, md2.m, md2.n) # log SR and linear year best fit
 
 ##################
-#### Figure 4 ####
+#### Figure 3 ####
 ##################
 averages <- dat[,c(5,6,8,9,10)]%>% group_by(ExpYear, N,SR) %>% summarise_all(funs(mean(., na.rm = TRUE)))
 newdf4 <- expand.grid(N = c("Namb", "Nenrich"), SR = c(1,4,9,16), ExpYear = seq(2,20, by = 1))
@@ -226,6 +231,10 @@ g2 <- ggplot(aes(x = ExpYear, y = fit), data = p5) +
   theme_classic() + 
   theme(text = element_text(size = 14))
 ggarrange(plotlist = list(g1,g2), common.legend = TRUE, nrow = 2, ncol = 1, labels = c("A", "B"))
+dev.off()
+
+png(here("Figures", "Fig3.png"), height = 1750, width = 2500, res = 300)
+ggarrange(plotlist = list(g1,g2), common.legend = TRUE, nrow = 2, ncol = 1, labels = c("(a)", "(b)"))
 dev.off()
 
 #################################
@@ -292,14 +301,14 @@ dat2 <- rbind(PlusN, Richness, pH)
 dat2$SR <- as.factor(dat2$SR)
 dat2$Source <- factor(dat2$Source, levels = c("pH", "Richness", "Net N effect"))
 
-pdf (here("Figures", "Fig5.pdf"), height = 5, width = 6)
+png (here("Figures", "Fig5.png"), height = 2700, width = 3600, res = 600)
 ggplot(aes(x = SR, y = Diff), data = dat2) + 
   geom_bar(aes(fill = Source, lty= Source), stat = "identity", color = "black") +
   scale_fill_manual(values = c("navy", "goldenrod", "seagreen")) +
   scale_linetype_manual(values= (c("dotted", "dotted", "solid"))) + 
-  labs (x = "Planted Richness", y = "Biomass (g/m2) above ambient or\npotential gains without constraints") + 
+  labs (x = "Planted Richness", y = bquote(atop("Biomass"~ (g/m^2) ~"above ambient", "or potential gains without constraints"))) + 
   theme_classic()+ 
-  theme(text = element_text(size = 14, face = "bold"))
+  theme(text = element_text(size = 14))
 dev.off()
 
 df5 <- merge(df4, Nadd, by = c("SR", "ExpYear"))
